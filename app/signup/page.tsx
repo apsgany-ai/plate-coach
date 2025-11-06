@@ -1,53 +1,82 @@
 "use client";
-
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [diabetesType, setDiabetesType] = useState("");
+  const router = useRouter();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    age: "",
+    diabetesType: "Type 2",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Save to localStorage
+    localStorage.setItem("platecoach_user", JSON.stringify(form));
+    alert(`Welcome, ${form.name}! Your profile has been saved.`);
+    router.push("/profile"); // go to profile page
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50">
-      <h1 className="text-2xl font-bold mb-6">Create Your Profile</h1>
+    <div className="max-w-md mx-auto bg-white shadow-md rounded-xl p-6 mt-10">
+      <h1 className="text-2xl font-bold text-gray-800 text-center mb-4">🩺 Sign Up for PlateCoach</h1>
+      <p className="text-gray-600 text-sm text-center mb-6">
+        Create your account to get personalized meal insights.
+      </p>
 
-      <div className="w-full max-w-sm space-y-4">
-
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
-          placeholder="Your Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full border p-3 rounded"
+          name="name"
+          placeholder="Full Name"
+          value={form.name}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-400"
+          required
         />
-
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-400"
+          required
+        />
         <input
           type="number"
+          name="age"
           placeholder="Age"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
-          className="w-full border p-3 rounded"
+          value={form.age}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-400"
+          required
         />
 
         <select
-          value={diabetesType}
-          onChange={(e) => setDiabetesType(e.target.value)}
-          className="w-full border p-3 rounded"
+          name="diabetesType"
+          value={form.diabetesType}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-400"
         >
-          <option value="">Select Diabetes Type</option>
-          <option value="Type 2">Type 2</option>
-          <option value="Type 1">Type 1</option>
-          <option value="Prediabetes">Prediabetes</option>
+          <option value="Type 1">Type 1 Diabetes</option>
+          <option value="Type 2">Type 2 Diabetes</option>
+          <option value="Prediabetic">Prediabetic</option>
         </select>
 
-        {/* Button navigates to Home */}
-        <a
-          href="/home"
-          className="block bg-blue-600 text-white p-3 rounded text-center font-semibold"
+        <button
+          type="submit"
+          className="w-full bg-green-500 text-white rounded-lg py-3 font-semibold hover:bg-green-600 transition-colors"
         >
-          Save Profile
-        </a>
-      </div>
+          Sign Up
+        </button>
+      </form>
     </div>
   );
 }
